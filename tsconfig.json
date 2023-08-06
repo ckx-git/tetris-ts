@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+      "target": "es5",
+      "module": "esnext", // 最新的模块化标准
+      "lib": ["es2016", "dom"], // 因为是浏览器环境的开发，所以需要加入dom
+      // "outDir": "./dist", // 因为现在由webpack进行打包，所以该配置不需要
+      "sourceMap": true,
+      "strict": true, // 开启严格的类型检查
+      "removeComments": true, // 移除注释
+      "esModuleInterop": true, // 启用es模块化交互非es模块导出
+      "moduleResolution": "node", // 模块解析方式
+      "isolatedModules": true // 强制要求每个文件是一个单独的模块
+  }, 
+  "include": ["./src"]
+}
