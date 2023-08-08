@@ -1,46 +1,44 @@
-import { SquareGroup } from "./core/SquareGroup";
+import { createTeris } from "./core/Teris";
+import { TerisRule } from "./core/TerisRule";
+import { MoveDirection } from "./core/types";
 import { SquarePageViewer } from "./core/viewer/SquarePageViewer";
 import $ from 'jquery'
 
-const group = new SquareGroup(
-  [ { x: 0, y: -1 }, { x: -1, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 1 } ],
-  { x: 4, y: 5 },
-  'red'
-)
+// 创建方块组
+const teris = createTeris({ x: 3, y: 2 })
 
-group.squares.forEach(sq => {
+teris.squares.forEach(sq => {
   sq.viewer = new SquarePageViewer(sq, $('#root'))
 })
 
-$('#btnDown').on('click', function() {
+$('#btnDown').on('click', function () {
+  // TerisRule.move(teris, MoveDirection.down)
+  TerisRule.moveDirectly(teris, MoveDirection.down)
+
   // 更改中心点坐标
-  group.centerPoint = {
-    x: group.centerPoint.x,
-    y: group.centerPoint.y + 1
-  }
-  console.log(group.centerPoint)
+  // const targetPoint = {
+  //   x: teris.centerPoint.x,
+  //   y: teris.centerPoint.y + 1
+  // }
+  // TerisRule.move(teris, targetPoint)
 })
-$('#btnUp').on('click', function() {
+$('#btnUp').on('click', function () {
   // 更改中心点坐标
-  group.centerPoint = {
-    x: group.centerPoint.x,
-    y: group.centerPoint.y - 1
+  const targetPoint = {
+    x: teris.centerPoint.x,
+    y: teris.centerPoint.y - 1
   }
-  console.log(group.centerPoint)
+  if (TerisRule.canIMove(teris.shape, targetPoint)) {
+    teris.centerPoint = {
+      x: teris.centerPoint.x,
+      y: teris.centerPoint.y - 1
+    }
+    console.log(teris.centerPoint)
+  }
 })
-$('#btnLeft').on('click', function() {
-  // 更改中心点坐标
-  group.centerPoint = {
-    x: group.centerPoint.x - 1,
-    y: group.centerPoint.y
-  }
-  console.log(group.centerPoint)
+$('#btnLeft').on('click', function () {
+  TerisRule.move(teris, MoveDirection.left)
 })
-$('#btnRight').on('click', function() {
-  // 更改中心点坐标
-  group.centerPoint = {
-    x: group.centerPoint.x + 1,
-    y: group.centerPoint.y
-  }
-  console.log(group.centerPoint)
+$('#btnRight').on('click', function () {
+  TerisRule.move(teris, MoveDirection.right)
 })

@@ -11,14 +11,18 @@ export class SquareGroup {
     return this._squares
   }
 
+  public get shape() {
+    return this._shape
+  }
+
   public get centerPoint(): Point {
     return this._centerPoint
   }
 
-  // 中心点的实际坐标
+  // 中心点的实际逻辑坐标
   public set centerPoint(v: Point) {
     this._centerPoint = v
-    // 同时设置小方块对象的坐标
+    // 根据中心点的逻辑坐标设置小方块对象实际逻辑的坐标
     this._shape.forEach((p, i) => {
       this._squares[i].point = {
         x: this._centerPoint.x + p.x,
