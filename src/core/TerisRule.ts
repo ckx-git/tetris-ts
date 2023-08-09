@@ -16,7 +16,7 @@ function isPoint(obj: any): obj is Point {
  */
 export class TerisRule {
   /**
-   * 判断某个形状的方块组合，能否移动到目标位置
+   * 判断某个形状的方块组合，能否移动到目标位置。如果移动后超出了边界，则不能移动
    */
   static canIMove(shape: Shape, targetPoint: Point): boolean {
     // 假设：中心点已经移动到了目标位置，算出每个小方块的坐标
@@ -45,7 +45,7 @@ export class TerisRule {
       return false
     }
     else {
-      // 想下、左、右移动 
+      // 向下、左、右移动 
       const direction = targetPointOrDirection
       let targetPoint: Point
       if (direction === MoveDirection.down) {
@@ -85,5 +85,14 @@ export class TerisRule {
     //     break
     //   }
     // }
+  }
+
+  static rotate(teris: SquareGroup): boolean {
+    const newShape = teris.afterRotateShape()
+    if (TerisRule.canIMove(newShape, teris.centerPoint)) {
+      teris.rotate()
+      return true
+    }
+    return false
   }
 }

@@ -12,15 +12,7 @@ teris.squares.forEach(sq => {
 })
 
 $('#btnDown').on('click', function () {
-  // TerisRule.move(teris, MoveDirection.down)
   TerisRule.moveDirectly(teris, MoveDirection.down)
-
-  // 更改中心点坐标
-  // const targetPoint = {
-  //   x: teris.centerPoint.x,
-  //   y: teris.centerPoint.y + 1
-  // }
-  // TerisRule.move(teris, targetPoint)
 })
 $('#btnUp').on('click', function () {
   // 更改中心点坐标
@@ -41,4 +33,7 @@ $('#btnLeft').on('click', function () {
 })
 $('#btnRight').on('click', function () {
   TerisRule.move(teris, MoveDirection.right)
+})
+$('#rotate').on('click', function () {
+  TerisRule.rotate(teris)
 })
