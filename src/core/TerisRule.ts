@@ -37,6 +37,7 @@ export class TerisRule {
   static move(teris: SquareGroup, targetPoint: Point): boolean
   static move(teris: SquareGroup, direction: MoveDirection): boolean
   static move(teris: SquareGroup, targetPointOrDirection: Point | MoveDirection): boolean {
+    // 如果是Point, 则移动到指定位置
     if (isPoint(targetPointOrDirection)) {
       if (TerisRule.canIMove(teris.shape, targetPointOrDirection)) {
         teris.centerPoint = targetPointOrDirection
@@ -44,6 +45,7 @@ export class TerisRule {
       }
       return false
     }
+    // 如果是direction, 则自动一格一格移动到不能移动为止
     else {
       // 向下、左、右移动 
       const direction = targetPointOrDirection

@@ -1,5 +1,5 @@
 import { SquareGroup } from "./SquareGroup";
-import { Point, Shape } from "./types";
+import { Point } from "./types";
 import { getRandom } from "./utils";
 
 // 这写都是随意选定中心点后，用相对坐标表示的形状

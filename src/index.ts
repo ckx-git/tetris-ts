@@ -1,39 +1,30 @@
-import { createTeris } from "./core/Teris";
-import { TerisRule } from "./core/TerisRule";
-import { MoveDirection } from "./core/types";
-import { SquarePageViewer } from "./core/viewer/SquarePageViewer";
+import { Game } from "./core/Game";
+import { GamePageViewer } from "./core/viewer/GamePageViewer";
 import $ from 'jquery'
 
-// 创建方块组
-const teris = createTeris({ x: 3, y: 2 })
+let game = new Game(new GamePageViewer())
+game.start()
 
-teris.squares.forEach(sq => {
-  sq.viewer = new SquarePageViewer(sq, $('#root'))
+$('#btnStart').on('click', function() {
+  console.log('s')
+  game.start()
+})
+$('#btnPause').on('click', function() {
+  console.log('p')
+  game.pause()
+})
+$("#btnLeft").on('click', function(){
+  game.controlLeft();
 })
 
-$('#btnDown').on('click', function () {
-  TerisRule.moveDirectly(teris, MoveDirection.down)
+$("#btnRight").on('click', function(){
+  game.controlRight();
 })
-$('#btnUp').on('click', function () {
-  // 更改中心点坐标
-  const targetPoint = {
-    x: teris.centerPoint.x,
-    y: teris.centerPoint.y - 1
-  }
-  if (TerisRule.canIMove(teris.shape, targetPoint)) {
-    teris.centerPoint = {
-      x: teris.centerPoint.x,
-      y: teris.centerPoint.y - 1
-    }
-    console.log(teris.centerPoint)
-  }
+
+$("#btnDown").on('click', function(){
+  game.controlDown();
 })
-$('#btnLeft').on('click', function () {
-  TerisRule.move(teris, MoveDirection.left)
-})
-$('#btnRight').on('click', function () {
-  TerisRule.move(teris, MoveDirection.right)
-})
-$('#rotate').on('click', function () {
-  TerisRule.rotate(teris)
+
+$("#btnRotate").on('click', function(){
+  game.controlRotate();
 })
