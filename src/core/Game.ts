@@ -1,3 +1,4 @@
+import { timers } from "jquery";
 import GameConfig from "./GameConfig";
 import { Square } from "./Square";
 import { SquareGroup } from "./SquareGroup";
@@ -15,12 +16,41 @@ export class Game {
   // 计时器
   private _timer?: number
   // 自动下落的时间间隔
-  private _duration: number = 1000
+  private _duration: number
   // 当前游戏中已存在的已落下的小方块
   // 说明：这里为什么不用SquareGroup? 因为方块组在下落即控制的过程中有意义，已经下落完成后无意义
   private _exists: Square[] = []
   // 积分
   private _score: number = 0
+
+  // score访问器
+  public get score() {
+    return this._score
+  }
+  public set score(val) {
+    this._score = val
+    this._viewer.showScore(val) // 通过访问器更新score显示
+
+    
+    // 分数变化时判断分数等级
+    const level = GameConfig.levels.filter(it => it.score <= val).pop()!
+    console.log('score:', this.score, 'level: ', level.duration)
+
+    if (val === level.duration) { // 等级没变化不处理
+      return
+    }
+
+    // 赋值为当前等级，清空计时器以新的速度重新自动下落
+    this._duration = level.duration
+    if (this._timer) {
+      clearInterval(this._timer)
+      this._timer = undefined
+      this.autoDrop()
+    }
+  }
+  public get gameStatus() {
+    return this._gameStatus
+  }
 
   // 这里知道何时显示，但不知道如何显示
   constructor(private _viewer: GameViewer) {
@@ -28,8 +58,11 @@ export class Game {
     // 因为目前ts只检查属性在声明时或者构造函数中有无直接赋值。在构造函数中通过调用其他函数的赋值是检测不到的。
     // 这里_nextTeris 其实在 createNext中有赋值，但是ts检测不到，会报错。
     this._nextTeris = createTeris({ x: 0, y: 0 })
+    this._duration = GameConfig.levels[0].duration
 
     this.createNext()
+    this._viewer.init(this)
+    this._viewer.showScore(this.score)
   }
 
   private createNext() {
@@ -38,9 +71,7 @@ export class Game {
     this._viewer.showNext(this._nextTeris)
   }
 
-  /**
-   * 游戏开始
-   */
+  // 游戏开始
   start() {
     // 改变游戏状态
     if (this._gameStatus === GameStatus.playing) {
@@ -52,8 +83,11 @@ export class Game {
       this.switchTeris()
     }
     this.autoDrop()
+
+    this._viewer.onGameStart()
   }
 
+  // 重新开始
   restart() {
     if (this._gameStatus !== GameStatus.pause) {
       this._gameStatus = GameStatus.pause
@@ -62,15 +96,15 @@ export class Game {
     this.start()
   }
 
+  // 初始化
   private init() {
-    this._curTeris?.squares.forEach(sq => {
+    // 重新开始时需要清除
+    this._nextTeris.squares.forEach(sq => {
       if (sq.viewer) {
         sq.viewer.remove()
       }
     })
-    this._curTeris = undefined
-
-    this._nextTeris.squares.forEach(sq => {
+    this._curTeris?.squares.forEach(sq => {
       if (sq.viewer) {
         sq.viewer.remove()
       }
@@ -82,17 +116,21 @@ export class Game {
         sq.viewer.remove()
       }
     })
+
     this._exists = []
     this.createNext()
+    this._curTeris = undefined
+    this.score = 0
   }
-  /**
-   * 游戏暂停
-   */
+  
+  // 游戏暂停
   pause() {
     if (this._gameStatus === GameStatus.playing) {
       this._gameStatus = GameStatus.pause
       clearInterval(this._timer)
       this._timer = undefined
+
+      this._viewer.onGamePause()
     }
   }
 
@@ -122,10 +160,13 @@ export class Game {
     }
   }
 
+  // 游戏结束
   private gameOver() {
     this._gameStatus = GameStatus.over
     clearInterval(this._timer)
     this._timer = undefined
+
+    this._viewer.onGameOver()
   }
 
   /**
@@ -215,17 +256,17 @@ export class Game {
       return;
     }
     else if (lineNum === 1) {
-      this._score += 10;
+      this.score += 10;
     }
     else if (lineNum === 2) {
-      this._score += 25;
+      this.score += 25;
     }
     else if (lineNum === 3) {
-      this._score += 50;
+      this.score += 50;
     }
     else {
-      this._score += 100;
+      this.score += 100;
     }
-    console.log('score:', this._score)
+    this._viewer.showScore(this.score)
   }
 }

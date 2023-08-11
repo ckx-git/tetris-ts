@@ -1,3 +1,4 @@
+import { Game } from "./Game"
 import { SquareGroup } from "./SquareGroup"
 
 export interface Point {
@@ -40,14 +41,33 @@ export enum GameStatus {
 
 export interface GameViewer {
   /**
-   * 
-   * @param teris 下一个方块对象
+   * 显示下一个方块组对象
+   * @param teris 
    */
   showNext(teris: SquareGroup): void
 
   /**
-   * 
-   * @param teris 切换的方块对象
+   * 切换当前方块组与下一个方块组对象
+   * @param teris 
    */
   switch(teris: SquareGroup): void
+
+  /**
+   * 完成游戏界面初始化
+   * @param game 
+   */
+  init(game: Game): void
+
+  /**
+   * 显示分数
+   * @param score 
+   */
+  showScore(score: number): void
+
+  onGamePause(): void
+
+  onGameStart(): void
+
+  onGameOver(): void
+
 }
